@@ -773,3 +773,4 @@ class TestAggregateToolScans:
         agg = aggregate_tool_scans(per_call, balanced)
         assert agg.allowed is False
         assert agg.score == 0.92
+        
