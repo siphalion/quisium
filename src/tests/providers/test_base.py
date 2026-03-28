@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from typing import Any, Dict, List, Optional
 from unittest.mock import patch
-
 import pytest
-
 import src.providers.base as base_mod
 from src.exceptions import (
     BlockedByPolicyError,
@@ -55,8 +52,6 @@ class EmptyResponseProvider(BaseProvider):
 
 
 class ErrorProvider(BaseProvider):
-    """Raises a RuntimeError on every model call."""
-
     provider_name = "error"
 
     def _call_model(self, messages, **kwargs):
@@ -67,8 +62,6 @@ class ErrorProvider(BaseProvider):
 
 
 class AlreadyWrappedProvider(BaseProvider):
-    """Raises a ProviderError directly (already wrapped)."""
-
     provider_name = "wrapped"
 
     def _call_model(self, messages, **kwargs):
@@ -79,8 +72,6 @@ class AlreadyWrappedProvider(BaseProvider):
 
 
 class HookProvider(BaseProvider):
-    """Records whether _on_blocked was called."""
-
     provider_name = "hook"
     hook_called: bool = False
     hook_exc: Optional[BlockedByPolicyError] = None
