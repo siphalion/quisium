@@ -1,4 +1,4 @@
-# LLM Security Toolkit
+# Quisium
 ### Architecture & Detailed Technical Specification
 
 > A production-grade Python middleware library for securing every LLM call, input guards, output validation, tool-call enforcement, and policy-driven control.
@@ -25,7 +25,7 @@
 
 ## 1. What Is This Project?
 
-The **LLM Security Toolkit** is a Python middleware library that sits between your application code and any LLM provider, intercepting every model call to enforce security checks before and after the AI responds.
+The **Quisium** is a Python middleware library that sits between your application code and any LLM provider, intercepting every model call to enforce security checks before and after the AI responds.
 
 Think of it as a security firewall specifically designed for AI calls:
 
@@ -105,7 +105,7 @@ Every guarded LLM call follows a **six-stage pipeline**:
 The project follows the **src-layout** convention to avoid import conflicts and mirrors the separation of concerns across its five internal layers:
 
 ```
-llm-security-toolkit/
+quisium/
 ├── README.md                    # Project overview and quick-start
 ├── CONTRIBUTING.md              # Fork & contribution guide
 ├── CODE_OF_CONDUCT.md           # Community standards
