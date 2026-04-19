@@ -162,7 +162,7 @@ class ScanResult:
 
 ### GuardDecision
 
-The top-level result returned to your application — an aggregation of all `ScanResult`s from all active guards:
+The top-level result returned to your application an aggregation of all `ScanResult`s from all active guards:
 
 ```python
 @dataclass
@@ -241,7 +241,7 @@ policy = load_policy_from_dict({
 
 > **Files:** `src/llm_security/guards/`
 
-Guards are the **security brain** of the toolkit. Each guard module is small, focused, and independently testable — designed to be easy to fork and extend with new detection rules.
+Guards are the **security brain** of the toolkit. Each guard module is small, focused, and independently testable designed to be easy to fork and extend with new detection rules.
 
 | Guard Module | Pattern Detected | Category | Default Action |
 |---|---|---|---|
