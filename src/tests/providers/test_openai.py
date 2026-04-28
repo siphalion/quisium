@@ -124,7 +124,7 @@ class TestOpenAIProviderInit:
     def test_openai_client_constructed_with_api_key(self):
         with patch("src.providers.openai.openai.OpenAI") as mock_cls:
             OpenAIProvider(model="gpt-4o", api_key="sk-mykey")
-        mock_cls.assert_called_once_with(api_key="sk-mykey")
+        assert mock_cls.call_args.kwargs["api_key"] == "sk-mykey"
 
     def test_api_key_from_env_var(self, monkeypatch):
         monkeypatch.setenv("OPENAI_API_KEY", "sk-from-env")

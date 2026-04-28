@@ -9,6 +9,11 @@ from .base import BaseProvider, ChatMessage, ProviderConfig
 
 _logger = logging.getLogger(__name__)
 
+try:
+    import openai
+except ImportError:
+    openai = None  # type: ignore[assignment]
+
 def _get_openai():
     try:
         import openai
