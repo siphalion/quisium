@@ -1,4 +1,0 @@
-guards
-middleware
-providers
-tests
