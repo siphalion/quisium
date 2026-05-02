@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "quisium"
 version = "0.1.1"
-description = "Production-grade security middleware for LLM calls — prompt injection detection, output validation, and tool-call enforcement."
+description = "Production-grade security middleware for LLM calls prompt injection detection, output validation, and tool-call enforcement."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.9"
