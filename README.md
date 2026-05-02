@@ -1,7 +1,7 @@
-# LLM Security Toolkit
+# Quisium
 ### Architecture & Detailed Technical Specification
 
-> A production-grade Python middleware library for securing every LLM call — input guards, output validation, tool-call enforcement, and policy-driven control.
+> A production-grade Python middleware library for securing every LLM call, input guards, output validation, tool-call enforcement, and policy-driven control.
 
 ---
 
@@ -25,7 +25,7 @@
 
 ## 1. What Is This Project?
 
-The **LLM Security Toolkit** is a Python middleware library that sits between your application code and any LLM provider — intercepting every model call to enforce security checks before and after the AI responds.
+The **Quisium** is a Python middleware library that sits between your application code and any LLM provider, intercepting every model call to enforce security checks before and after the AI responds.
 
 Think of it as a security firewall specifically designed for AI calls:
 
@@ -34,7 +34,7 @@ Think of it as a security firewall specifically designed for AI calls:
 - Enforces **schema rules** on every tool/function call the model tries to make
 - Applies **configurable policies** to decide whether to block, warn, or log
 
-The library exposes a clean, importable API — just a few extra lines in any existing Python AI app. No infrastructure changes required.
+The library exposes a clean, importable API, just a few extra lines in any existing Python AI app. No infrastructure changes required.
 
 | Property | Value |
 |---|---|
@@ -105,7 +105,7 @@ Every guarded LLM call follows a **six-stage pipeline**:
 The project follows the **src-layout** convention to avoid import conflicts and mirrors the separation of concerns across its five internal layers:
 
 ```
-llm-security-toolkit/
+quisium/
 ├── README.md                    # Project overview and quick-start
 ├── CONTRIBUTING.md              # Fork & contribution guide
 ├── CODE_OF_CONDUCT.md           # Community standards
@@ -162,7 +162,7 @@ class ScanResult:
 
 ### GuardDecision
 
-The top-level result returned to your application — an aggregation of all `ScanResult`s from all active guards:
+The top-level result returned to your application an aggregation of all `ScanResult`s from all active guards:
 
 ```python
 @dataclass
@@ -241,7 +241,7 @@ policy = load_policy_from_dict({
 
 > **Files:** `src/llm_security/guards/`
 
-Guards are the **security brain** of the toolkit. Each guard module is small, focused, and independently testable — designed to be easy to fork and extend with new detection rules.
+Guards are the **security brain** of the toolkit. Each guard module is small, focused, and independently testable designed to be easy to fork and extend with new detection rules.
 
 | Guard Module | Pattern Detected | Category | Default Action |
 |---|---|---|---|
