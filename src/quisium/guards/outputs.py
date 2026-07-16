@@ -1,9 +1,12 @@
 
 from __future__ import annotations
+
 import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Tuple
+
 from ..types import GuardType, ScanResult
+
 if TYPE_CHECKING:
     from ..policies import Policy
 
@@ -609,7 +612,7 @@ def scan_and_redact(
     )
 
 __all__ = [
-    "scan_output",
     "redact_output",
     "scan_and_redact",
+    "scan_output",
 ]

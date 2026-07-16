@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple
+
 from ..types import GuardType, ScanResult
 
 if TYPE_CHECKING:
@@ -567,7 +569,7 @@ def aggregate_tool_scans(
     )
 
 __all__ = [
+    "aggregate_tool_scans",
     "validate_tool_call",
     "validate_tool_calls",
-    "aggregate_tool_scans",
 ]

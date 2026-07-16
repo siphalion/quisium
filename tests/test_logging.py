@@ -23,12 +23,6 @@ from quisium.types import (
     ToolCall,
 )
 
-@pytest.fixture(autouse=True)
-def _clean_handlers():
-    clear_handlers()
-    yield
-    clear_handlers()
-
 @pytest.fixture()
 def policy():
     return BalancedPolicy()

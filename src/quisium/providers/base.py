@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 import logging
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional
+
 from ..config import get_default_policy
 from ..exceptions import (
     BlockedByPolicyError,
@@ -390,6 +392,6 @@ def _snippet(messages: List[ChatMessage], max_len: int = 120) -> str:
 
 __all__ = [
     "BaseProvider",
-    "ProviderConfig",
     "ChatMessage",
+    "ProviderConfig",
 ]

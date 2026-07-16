@@ -1,7 +1,7 @@
 from __future__ import annotations
+
 import json
 import logging
-import time
 import traceback
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 if TYPE_CHECKING:
     from .policies import Policy
-    from .types import GuardDecision, GuardType, ScanResult, ToolCall
+    from .types import GuardDecision, ScanResult, ToolCall
 
 _internal_logger = logging.getLogger(__name__)
 
@@ -98,7 +98,7 @@ def _dispatch(event: SecurityEvent) -> None:
     for handler in _handlers:
         try:
             handler(event)
-        except Exception:  # noqa: BLE001
+        except Exception:
             _internal_logger.error(
                 "LLM Security Toolkit: custom handler %r raised an exception:\n%s",
                 handler,

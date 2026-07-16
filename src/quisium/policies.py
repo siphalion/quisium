@@ -1,8 +1,11 @@
 from __future__ import annotations
+
 import copy
 from dataclasses import dataclass, field, fields
 from typing import Any, Dict, List, Optional, Set
+
 from .types import GuardType, PolicyAction
+
 
 @dataclass
 class GuardConfig:
@@ -216,7 +219,7 @@ def LoggingOnlyPolicy(
     defaults: Dict[str, Any] = dict(
         name=name,
         block_threshold=1.0,
-        warn_threshold=0.0,
+        warn_threshold=0.99,
         raise_on_block=False,
         redact_on_warn=False,
         log_clean_requests=True,
@@ -258,7 +261,7 @@ def load_policy_from_yaml(path: str) -> Policy:
             f"Policy YAML file not found: {path!r}"
         )
 
-    with open(path, "r", encoding="utf-8") as fh:
+    with open(path, encoding="utf-8") as fh:
         data = yaml.safe_load(fh) or {}
 
     if not isinstance(data, dict):
