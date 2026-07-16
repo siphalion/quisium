@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 import copy
 import logging
 import os
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, Tuple
+
 from .policies import (
     BalancedPolicy,
     GuardConfig,
@@ -11,7 +13,6 @@ from .policies import (
     load_policy_from_dict,
     load_policy_from_yaml,
 )
-from .types import GuardType
 
 logger = logging.getLogger(__name__)
 
@@ -265,7 +266,7 @@ def load_config(
                 "Install it with: pip install pyyaml"
             ) from exc
 
-        with open(yaml_path, "r", encoding="utf-8") as fh:
+        with open(yaml_path, encoding="utf-8") as fh:
             file_data = yaml.safe_load(fh) or {}
 
         if not isinstance(file_data, dict):

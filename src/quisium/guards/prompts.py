@@ -1,7 +1,8 @@
 from __future__ import annotations
+
 import base64
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Tuple
 
 from ..types import GuardType, ScanResult
@@ -399,7 +400,6 @@ def scan_prompt(
     *,
     short_circuit: bool = True,
 ) -> ScanResult:
-    from ..policies import Policy  # local import avoids circular at module level
 
     if not policy.is_guard_enabled(GuardType.PROMPT):
         return ScanResult(
@@ -525,7 +525,7 @@ def aggregate_prompt_scans(
     )
 
 __all__ = [
-    "scan_prompt",
-    "scan_messages",
     "aggregate_prompt_scans",
+    "scan_messages",
+    "scan_prompt",
 ]

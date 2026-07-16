@@ -1,20 +1,22 @@
 from __future__ import annotations
+
 import json
 import logging
 import time
-from typing import Any, Callable, Dict, List, Optional, Sequence, Union
-from starlette.datastructures import MutableHeaders
+from typing import Any, Dict, List, Optional, Sequence
+
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
-from starlette.responses import JSONResponse, Response, StreamingResponse
+from starlette.responses import JSONResponse, Response
 from starlette.types import ASGIApp
+
 from ..config import get_default_policy
-from ..exceptions import BlockedByPolicyError, PromptBlockedError, OutputBlockedError
+from ..exceptions import BlockedByPolicyError, OutputBlockedError, PromptBlockedError
 from ..guards.outputs import scan_and_redact
 from ..guards.prompts import aggregate_prompt_scans, scan_messages
 from ..logging import LogFormat, SecurityEventLogger
 from ..policies import Policy
-from ..types import GuardDecision, GuardType, PolicyAction, ScanResult
+from ..types import GuardDecision, GuardType, PolicyAction
 
 _logger = logging.getLogger(__name__)
 
@@ -233,7 +235,7 @@ class GuardedRoute:
 
         return []
 
-class LLMSecurityMiddleware(BaseHTTPMiddleware):
+class QuisiumMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app:             ASGIApp,
@@ -271,7 +273,6 @@ class LLMSecurityMiddleware(BaseHTTPMiddleware):
 
         start = time.perf_counter()
         messages  = await self._extract_messages(request)
-        prompt_ok = True
         p_decision: Optional[GuardDecision] = None
 
         if messages:
@@ -460,6 +461,9 @@ class LLMSecurityMiddleware(BaseHTTPMiddleware):
             safe_text.encode("utf-8"),
         )
 
+#: Deprecated alias for :class:`QuisiumMiddleware`, kept for backwards compatibility.
+LLMSecurityMiddleware = QuisiumMiddleware
+
 async def _handle_prompt_blocked(
     request: Request,
     exc:     PromptBlockedError,
@@ -521,12 +525,13 @@ def _extract_last_user_content(messages: List[Dict[str, str]]) -> str:
     return ""
 
 __all__ = [
-    "LLMSecurityMiddleware",
-    "GuardedRoute",
-    "guard_messages",
-    "guard_output",
-    "decision_response",
-    "add_exception_handlers",
     "GUARD_DECISION_KEY",
     "GUARD_POLICY_KEY",
+    "GuardedRoute",
+    "LLMSecurityMiddleware",
+    "QuisiumMiddleware",
+    "add_exception_handlers",
+    "decision_response",
+    "guard_messages",
+    "guard_output",
 ]

@@ -219,7 +219,7 @@ class TestPresetDefaults:
         assert LoggingOnlyPolicy().block_threshold == 1.0
 
     def test_logging_warn_threshold(self):
-        assert LoggingOnlyPolicy().warn_threshold == 0.0
+        assert LoggingOnlyPolicy().warn_threshold == 0.99
 
     def test_logging_raise_on_block(self):
         assert LoggingOnlyPolicy().raise_on_block is False
@@ -313,14 +313,19 @@ class TestActionForScore:
         action = LoggingOnlyPolicy().action_for_score(0.92, GuardType.PROMPT)
         assert action != PolicyAction.BLOCK
 
-    def test_logging_only_warns_any_score(self):
-        # warn_threshold=0.0, so any score >= 0.0 is WARN (except score exactly 0.0 which is LOG)
-        action = LoggingOnlyPolicy().action_for_score(0.01, GuardType.PROMPT)
-        assert action == PolicyAction.WARN
-
-    def test_logging_only_warns_at_zero(self):
-        # warn_threshold=0.0, so 0.0 >= 0.0 is True → WARN even at score=0.0
+    def test_logging_only_logs_clean_score(self):
+        # A clean request scores 0.0, which must stay LOG, not WARN.
         action = LoggingOnlyPolicy().action_for_score(0.0, GuardType.PROMPT)
+        assert action == PolicyAction.LOG
+
+    def test_logging_only_logs_low_score(self):
+        # warn_threshold=0.99, so ordinary low-risk scores stay LOG.
+        action = LoggingOnlyPolicy().action_for_score(0.01, GuardType.PROMPT)
+        assert action == PolicyAction.LOG
+
+    def test_logging_only_warns_near_critical_score(self):
+        # Only near-critical scores (>= 0.99) should surface a WARN.
+        action = LoggingOnlyPolicy().action_for_score(0.99, GuardType.PROMPT)
         assert action == PolicyAction.WARN
 
     def test_all_guard_types_accepted(self):

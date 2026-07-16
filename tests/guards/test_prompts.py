@@ -9,18 +9,6 @@ from quisium.guards.prompts import (
 from quisium.policies import BalancedPolicy, GuardConfig, LoggingOnlyPolicy, StrictPolicy
 from quisium.types import GuardType, ScanResult
 
-@pytest.fixture()
-def balanced():
-    return BalancedPolicy(raise_on_block=False)   # block=0.75, warn=0.40
-
-@pytest.fixture()
-def strict():
-    return StrictPolicy(raise_on_block=False)     # block=0.40, warn=0.15
-
-@pytest.fixture()
-def logging_only():
-    return LoggingOnlyPolicy()                    # block=1.0, never blocks
-
 class TestScanPromptClean:
     def test_factual_question_is_clean(self, balanced):
         r = scan_prompt("What is the capital of France?", balanced)

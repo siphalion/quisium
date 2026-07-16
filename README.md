@@ -115,7 +115,7 @@ quisium/
 ├── .github/
 │   └── workflows/ci.yml         # Tests + lint on push / PR
 │
-├── src/llm_security/            # Main package (src layout)
+├── src/quisium/            # Main package (src layout)
 │   ├── __init__.py              # Public re-exports
 │   ├── types.py                 # ScanResult, GuardDecision, ToolCall
 │   ├── policies.py              # Policy models + built-in presets
@@ -143,7 +143,7 @@ quisium/
 
 ## 4. Core Types & Models
 
-> **File:** `src/llm_security/types.py`
+> **File:** `src/quisium/types.py`
 
 Every part of the library speaks the same three data structures. These are the *lingua franca* of the entire package.
 
@@ -239,7 +239,7 @@ policy = load_policy_from_dict({
 
 ## 6. The Guards Layer
 
-> **Files:** `src/llm_security/guards/`
+> **Files:** `src/quisium/guards/`
 
 Guards are the **security brain** of the toolkit. Each guard module is small, focused, and independently testable designed to be easy to fork and extend with new detection rules.
 
@@ -307,7 +307,7 @@ def validate_tool_call(call: ToolCall, policy: Policy) -> ScanResult:
 
 ## 7. Providers Layer
 
-> **Files:** `src/llm_security/providers/`
+> **Files:** `src/quisium/providers/`
 
 Providers wrap real LLM clients. They orchestrate the full guard pipeline — input scan → forward → output scan — and return a `GuardDecision` to the caller.
 
@@ -342,7 +342,7 @@ class ProviderAdapter(ABC):
 
 ## 8. Middleware Layer
 
-> **Files:** `src/llm_security/middleware/`
+> **Files:** `src/quisium/middleware/`
 
 The middleware layer makes it trivial to guard an entire HTTP endpoint with almost no code change.
 
@@ -402,7 +402,7 @@ def log_decision(decision: GuardDecision, logger: logging.Logger) -> None:
 
 ## 10. Public API Surface
 
-> **File:** `src/llm_security/__init__.py`
+> **File:** `src/quisium/__init__.py`
 
 The top-level package re-exports everything a user needs. Nothing implementation-specific is public:
 

@@ -1,17 +1,19 @@
 from __future__ import annotations
+
 import functools
 import io
 import json
 import logging
 import time
-from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+
 from ..config import get_default_policy
 from ..exceptions import BlockedByPolicyError, OutputBlockedError, PromptBlockedError
 from ..guards.outputs import scan_and_redact
 from ..guards.prompts import aggregate_prompt_scans, scan_messages
 from ..logging import LogFormat, SecurityEventLogger
 from ..policies import Policy
-from ..types import GuardDecision, GuardType, PolicyAction, ScanResult
+from ..types import GuardDecision, GuardType, PolicyAction
 
 _logger = logging.getLogger(__name__)
 #: Flask ``g`` attribute where ``guard_route`` stores the GuardDecision.
@@ -213,7 +215,7 @@ def guard_route(
         return wrapper
     return decorator
 
-class LLMSecurityMiddleware:
+class QuisiumMiddleware:
     def __init__(
         self,
         app:             Any,
@@ -376,6 +378,9 @@ class LLMSecurityMiddleware:
             ("Content-Length", str(len(body))),
         ])
         return [body]
+
+#: Deprecated alias for :class:`QuisiumMiddleware`, kept for backwards compatibility.
+LLMSecurityMiddleware = QuisiumMiddleware
 
 def register_error_handlers(app: Any) -> None:
     from flask import jsonify
@@ -569,13 +574,14 @@ def _noop_write(data: bytes) -> None:
     pass
 
 __all__ = [
-    "LLMSecurityMiddleware",
-    "guard_route",
-    "guard_messages",
-    "guard_output",
-    "decision_response",
-    "get_decision",
-    "register_error_handlers",
     "GUARD_DECISION_KEY",
     "GUARD_POLICY_KEY",
+    "LLMSecurityMiddleware",
+    "QuisiumMiddleware",
+    "decision_response",
+    "get_decision",
+    "guard_messages",
+    "guard_output",
+    "guard_route",
+    "register_error_handlers",
 ]

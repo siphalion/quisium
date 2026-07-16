@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quisium"
-version = "0.1.1"
+version = "0.1.3"
 description = "Production-grade security middleware for LLM calls prompt injection detection, output validation, and tool-call enforcement."
 readme = "README.md"
 license = { text = "MIT" }
@@ -88,9 +88,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage    = "https://github.com/vladlen-codes/llm-security-toolkit"
-Repository  = "https://github.com/vladlen-codes/llm-security-toolkit"
-Issues      = "https://github.com/vladlen-codes/llm-security-toolkit/issues"
+Homepage    = "https://github.com/siphalion/quisium"
+Repository  = "https://github.com/siphalion/quisium"
+Issues      = "https://github.com/siphalion/quisium/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -151,6 +151,20 @@ ignore = [
     "ANN102",  # missing type for cls
     "S101",    # use of assert (fine in tests)
     "ANN401",  # Any is sometimes intentional in generic APIs
+    "UP006",   # non-pep585-annotation — codebase deliberately uses typing.Dict/List style
+    "UP035",   # deprecated-import — same reason
+    "UP037",   # quoted-annotation — same reason
+    "UP045",   # non-pep604-annotation-optional — same reason
+    "E501",    # line-too-long — a handful of long lines, not worth reflowing
+    "ANN201",  # missing-return-type-undocumented-public-function
+    "ANN202",  # missing-return-type-private-function
+    "C408",    # unnecessary-collection-call
+    "S110",    # try-except-pass
+    "S112",    # try-except-continue
+    "S310",    # suspicious-url-open-usage
+    "B027",    # empty-method-without-abstract-decorator
+    "B904",    # raise-without-from-inside-except
+    "RUF022",  # unsorted-dunder-all — __all__ lists are intentionally grouped by comment headers
 ]
 
 [tool.ruff.lint.per-file-ignores]

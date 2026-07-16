@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import logging
 import os
-from typing import Any, Dict, Generator, Iterable, List, Optional
+from typing import Any, Dict, Generator, List, Optional
+
 from ..exceptions import ProviderError, ProviderTimeoutError
 from ..policies import Policy
 from ..types import GuardDecision, ToolCall
@@ -232,10 +234,11 @@ class OpenAIProvider(BaseProvider):
         **kwargs: Any,
     ) -> Generator[str, None, GuardDecision]:
         import time as _time
-        from ..guards.prompts import scan_messages, aggregate_prompt_scans
-        from ..guards.outputs import scan_and_redact
-        from ..types import PolicyAction, GuardType, ScanResult
+
         from ..exceptions import PromptBlockedError
+        from ..guards.outputs import scan_and_redact
+        from ..guards.prompts import aggregate_prompt_scans, scan_messages
+        from ..types import GuardType, PolicyAction
         from .base import _snippet
 
         active_policy = policy or self._policy

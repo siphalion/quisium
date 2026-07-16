@@ -95,18 +95,8 @@ FICTIONAL_MSG = [
 
 
 @pytest.fixture()
-def balanced():
-    return BalancedPolicy(raise_on_block=False)
-
-
-@pytest.fixture()
 def raising():
     return BalancedPolicy(raise_on_block=True)
-
-
-@pytest.fixture()
-def logging_only():
-    return LoggingOnlyPolicy()
 
 
 @pytest.fixture(autouse=True)
@@ -258,6 +248,13 @@ class TestChatCleanPipeline:
 
     def test_warned_false_for_clean(self, balanced):
         p = EchoProvider(policy=balanced)
+        d = p.chat(CLEAN_MSG)
+        assert d.warned is False
+
+    def test_warned_false_for_clean_logging_only(self, logging_only):
+        # Regression: LoggingOnlyPolicy previously defaulted warn_threshold=0.0,
+        # so a clean request (score 0.0) satisfied 0.0 >= 0.0 and was flagged WARN.
+        p = EchoProvider(policy=logging_only)
         d = p.chat(CLEAN_MSG)
         assert d.warned is False
 

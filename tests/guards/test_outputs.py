@@ -5,18 +5,6 @@ from quisium.policies import BalancedPolicy, GuardConfig, LoggingOnlyPolicy, Str
 from quisium.types import GuardType, ScanResult
 
 @pytest.fixture()
-def balanced():
-    return BalancedPolicy(raise_on_block=False)
-
-@pytest.fixture()
-def strict():
-    return StrictPolicy(raise_on_block=False)
-
-@pytest.fixture()
-def logging_only():
-    return LoggingOnlyPolicy()
-
-@pytest.fixture()
 def redact_policy():
     return BalancedPolicy(redact_on_warn=True, raise_on_block=False)
 

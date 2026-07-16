@@ -4,13 +4,12 @@ import asyncio
 from typing import Any, Dict, List
 import pytest
 from quisium.exceptions import OutputBlockedError, PromptBlockedError
-from quisium.logging import clear_handlers
 from quisium.middleware.fastapi import (
     GUARD_DECISION_KEY,
     GUARD_POLICY_KEY,
     DEFAULT_SCAN_PATHS,
     GuardedRoute,
-    LLMSecurityMiddleware,
+    QuisiumMiddleware,
     _blocked_json,
     _extract_last_user_content,
     _normalise_messages,
@@ -40,16 +39,6 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-@pytest.fixture(autouse=True)
-def _clean_handlers():
-    clear_handlers()
-    yield
-    clear_handlers()
-
-@pytest.fixture()
-def balanced():
-    return BalancedPolicy(raise_on_block=False)
-
 @pytest.fixture()
 def balanced_raise():
     return BalancedPolicy(raise_on_block=True)
@@ -76,7 +65,7 @@ def _make_app(
         ]
     )
     app.add_middleware(
-        LLMSecurityMiddleware,
+        QuisiumMiddleware,
         policy=policy or BalancedPolicy(raise_on_block=False),
         scan_paths=scan_paths or ["/chat"],
         scan_output=scan_output,
@@ -358,7 +347,7 @@ class TestGuardOutput:
             guard_output(f"Key: {_FAKE_KEY}", policy=BalancedPolicy(raise_on_block=True))
         assert exc_info.value.score > 0
 
-class TestLLMSecurityMiddlewareClean:
+class TestQuisiumMiddlewareClean:
     def test_clean_request_reaches_handler(self, balanced):
         client = _client(_make_app(policy=balanced))
         resp = _post_chat(client, _user_msg("What is Python?"))
@@ -374,7 +363,7 @@ class TestLLMSecurityMiddlewareClean:
         client = _client(_make_app(policy=balanced))
         assert _post_chat(client, _user_msg("What is Python?")).status_code == 200
 
-class TestLLMSecurityMiddlewareBlocked:
+class TestQuisiumMiddlewareBlocked:
     def test_injection_returns_400(self, balanced):
         client = _client(_make_app(policy=balanced))
         resp = _post_chat(client, _user_msg(_INJECTION))
@@ -420,7 +409,7 @@ class TestLLMSecurityMiddlewareBlocked:
         body = _post_chat(client, _user_msg(_INJECTION)).json()
         assert "reasons" not in body
 
-class TestLLMSecurityMiddlewareOutput:
+class TestQuisiumMiddlewareOutput:
     def test_credential_in_response_returns_400(self, balanced):
         client = _client(_make_app(handler=_bad_output_handler, policy=balanced, scan_output=True))
         resp = _post_chat(client, _user_msg("What is Python?"))
@@ -451,7 +440,7 @@ class TestLLMSecurityMiddlewareOutput:
         body = _post_chat(client, _user_msg("What is Python?")).json()
         assert body["content"] == "Hello from handler!"
 
-class TestLLMSecurityMiddlewarePaths:
+class TestQuisiumMiddlewarePaths:
     def test_health_endpoint_not_scanned(self, balanced):
         client = _client(_make_app(policy=balanced, scan_paths=["/chat"]))
         resp = client.get("/health")
@@ -476,7 +465,7 @@ class TestLLMSecurityMiddlewarePaths:
             ]
         )
         app.add_middleware(
-            LLMSecurityMiddleware,
+            QuisiumMiddleware,
             policy=balanced,
             scan_paths=["/chat", "/v1/messages"],
         )
@@ -489,7 +478,7 @@ class TestLLMSecurityMiddlewarePaths:
         assert "/chat" in DEFAULT_SCAN_PATHS
         assert "/v1/chat" in DEFAULT_SCAN_PATHS
 
-class TestLLMSecurityMiddlewareFields:
+class TestQuisiumMiddlewareFields:
     def test_messages_field_injection_blocked(self, balanced):
         client = _client(_make_app(policy=balanced))
         resp = client.post("/chat", json={"messages": _user_msg(_INJECTION)})
@@ -516,7 +505,7 @@ class TestLLMSecurityMiddlewareFields:
         resp = client.post("/chat", json={"unknown_field": _INJECTION})
         assert resp.status_code == 200
 
-class TestLLMSecurityMiddlewareMisc:
+class TestQuisiumMiddlewareMisc:
     def test_invalid_json_body_passes_through(self, balanced):
         client = _client(_make_app(policy=balanced))
         resp = client.post(
@@ -569,7 +558,7 @@ class TestLLMSecurityMiddlewareMisc:
             return R(content="plain text response", media_type="text/plain")
 
         app = Starlette(routes=[Route("/chat", text_handler, methods=["POST"])])
-        app.add_middleware(LLMSecurityMiddleware, policy=balanced, scan_paths=["/chat"], scan_output=True)
+        app.add_middleware(QuisiumMiddleware, policy=balanced, scan_paths=["/chat"], scan_output=True)
         client = TestClient(app, raise_server_exceptions=False)
         resp = client.post("/chat", json={"messages": _user_msg("Hi")})
         assert resp.status_code == 200
@@ -712,3 +701,9 @@ class TestAddExceptionHandlers:
         fake = FakeApp()
         add_exception_handlers(fake)
         assert BlockedByPolicyError in fake.handlers
+
+class TestLLMSecurityMiddlewareAlias:
+    def test_alias_is_same_object_as_quisium_middleware(self):
+        from quisium.middleware.fastapi import LLMSecurityMiddleware
+
+        assert LLMSecurityMiddleware is QuisiumMiddleware
